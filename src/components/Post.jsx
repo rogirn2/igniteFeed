@@ -24,11 +24,19 @@ export function Post({ author, content, publishedAt }) {
         event.preventDefault();
 
         setComments([...comments, newCommentText]);
+        document.querySelector(".btn").blur();
         setNewCommentText('');
     }
 
     function handleNewCommentChange(event) {
         setNewCommentText(event.target.value);
+    }
+
+    function deleteComment(commentToDelete) {
+        const commentsWithoutDeletedOne = comments.filter(comment => {
+            return comment != commentToDelete;
+        })
+        setComments(commentsWithoutDeletedOne);
     }
     
     return (
@@ -48,9 +56,9 @@ export function Post({ author, content, publishedAt }) {
             <div className={styles.content}>
                 {content.map(line => {
                     if (line.type === 'paragraph'){
-                        return <p>{line.content}</p>
+                        return <p key={line.id}>{line.content}</p>
                     }else if (line.type === 'link'){
-                        return <p><a href={line.content}>{line.content}</a></p>
+                        return <p key={line.id}><a href={line.content}>{line.content}</a></p>
                     }
                 })}
             </div>
@@ -66,15 +74,17 @@ export function Post({ author, content, publishedAt }) {
                 />
 
                 <footer>
-                    <button type='submit'>Publicar</button>
+                    <button className='btn' type='submit'>Publicar</button>
                 </footer>
             </form>
 
             <div className={styles.commentList}>
                 {comments.map(comment => {
                     return (
-                        <Comment 
+                        <Comment
+                            key={comment} 
                             content={comment}
+                            onDeleteComment={deleteComment}
                         />
                     )
                 })}
