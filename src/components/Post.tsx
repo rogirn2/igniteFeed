@@ -1,13 +1,28 @@
 import { format, formatDistanceToNow } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
 
 import styles from '../css/Post.module.css';
 import { Avatar } from './Avatar';
 import { Comment } from './Comment';
 
-export function Post({ author, content, publishedAt }) {
-    const [comments, setComments] = useState([]);
+interface Content {
+    type: 'paragraph' | 'link';
+    content: string;
+}
+
+interface PostProps {
+    author: {
+        name: string;
+        role: string;
+        avatarUrl: string;
+    };
+    publishedAt: Date;
+    content: Content[];
+}
+
+export function Post({ author, content, publishedAt }: PostProps) {
+    const [comments, setComments] = useState(['']);
 
     const [newCommentText, setNewCommentText] = useState('');
     
@@ -20,24 +35,24 @@ export function Post({ author, content, publishedAt }) {
         addSuffix: true,
     });
 
-    function handleCreateNewComment(event) {
+    function handleCreateNewComment(event: FormEvent) {
         event.preventDefault();
 
         setComments([...comments, newCommentText]);
-        document.querySelector(".btn").blur();
+        //document.querySelector(".btn").blur();
         setNewCommentText('');
     }
 
-    function handleNewCommentChange(event) {
+    function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity('');
         setNewCommentText(event.target.value);
     }
 
-    function handleNewCommentInvalid(event) {
+    function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity('Este campo é obrigatório!');
     }
 
-    function deleteComment(commentToDelete) {
+    function deleteComment(commentToDelete: string) {
         const commentsWithoutDeletedOne = comments.filter(comment => {
             return comment != commentToDelete;
         })
@@ -63,22 +78,22 @@ export function Post({ author, content, publishedAt }) {
             <div className={styles.content}>
                 {content.map(line => {
                     if (line.type === 'paragraph'){
-                        return <p key={line.id}>{line.content}</p>
+                        return <p key={line.content}>{line.content}</p>
                     }else if (line.type === 'link'){
-                        return <p key={line.id}><a href={line.content}>{line.content}</a></p>
+                        return <p key={line.content}><a href={line.content}>{line.content}</a></p>
                     }
                 })}
             </div>
 
-            <form onSubmit={event => handleCreateNewComment(event)} className={styles.commentForm}>
+            <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
                 <strong>Deixe seu feedback</strong>
 
                 <textarea
                     name='comment' 
                     placeholder='Deixe um comentário'
                     value={newCommentText}
-                    onChange={event => handleNewCommentChange(event)}
-                    onInvalid={event => handleNewCommentInvalid(event)}
+                    onChange={handleNewCommentChange}
+                    onInvalid={handleNewCommentInvalid}
                     required
                 />
 

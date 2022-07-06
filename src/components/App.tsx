@@ -15,9 +15,9 @@ const posts =[
       role: 'Web Developer'
     },
     content: [
-      { id:1, type: 'paragraph', content: 'Fala galeraa 👋' },
-      { id:2, type: 'paragraph', content: 'Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀' },
-      { id:3, type: 'link', content: '👉 jane.design/doctorcare' },
+      { type: 'paragraph', content: 'Fala galeraa 👋' },
+      { type: 'paragraph', content: 'Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀' },
+      { type: 'link', content: '👉 jane.design/doctorcare' },
     ],
     publishedAt: new Date('2022-06-25 18:10:00'),
   },
@@ -30,13 +30,18 @@ const posts =[
       role: 'Senior Developer'
     },
     content: [
-      { id:1, type: 'paragraph', content: 'Fala galeraa 👋' },
-      { id:2, type: 'paragraph', content: 'Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀' },
-      { id:3, type: 'link', content: '👉 jane.design/doctorcare' },
+      { type: 'paragraph', content: 'Fala galeraa 👋' },
+      { type: 'paragraph', content: 'Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀' },
+      { type: 'link', content: '👉 jane.design/doctorcare' },
     ],
     publishedAt: new Date('2022-06-27 18:10:00'),
   }
 ];
+
+interface Content {
+  type: 'paragraph' | 'link';
+  content: string;
+}
 
 export function App() {
 
@@ -52,7 +57,7 @@ export function App() {
               <Post
                 key={post.id} 
                 author={post.author}
-                content={post.content}
+                content={post.content as Content[]}
                 publishedAt={post.publishedAt}
               />
             )
